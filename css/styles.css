@@ -11360,6 +11360,14 @@ html {
   padding: 15px;
 }
 
+.sidebar-nav li.sidebar-nav-item-huruf a {
+  display: block;
+  text-decoration: none;
+  color: #fff;
+  padding: 15px;
+  font-size: 1vw;
+}
+
 .sidebar-nav li a:hover {
   text-decoration: none;
   color: #fff;
@@ -11617,7 +11625,7 @@ font-family: 'Strait', sans-serif;
 .scrollbar
 {
 
-height: 90%;
+height: 100%;
 width: 100%;
 overflow-y: hidden;
 overflow-x: hidden;
