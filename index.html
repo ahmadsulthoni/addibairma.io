@@ -18,6 +18,18 @@
         <link href="css/styles.css" rel="stylesheet" />
     </head>
     <body id="page-top">
+		<!-- Mobile Zoom Controls -->
+<div id="mobileZoomControls" class="mobile-zoom-controls">
+    <button type="button" id="zoomOut" aria-label="Zoom Out">
+        <i class="fas fa-minus"></i>
+    </button>
+
+    <span id="zoomPercent">100%</span>
+
+    <button type="button" id="zoomIn" aria-label="Zoom In">
+        <i class="fas fa-plus"></i>
+    </button>
+</div>
         <!-- Navigation-->
         <a class="menu-toggle rounded" href="#"><i class="fas fa-bars"></i></a>
         <nav id="sidebar-wrapper">
@@ -566,6 +578,12 @@
 						رَبِّ بَلِّغْـنَا بِجَاهِـهْ # فِــى جِـوَارِهْ خَـيْرَمَــقْعَدْ<br>
 						وَصَــلَاةُ اللهِ تَغْـشٰــى # اَشْـرَفَ الرَّسْـلِ مُـحَمَّدْ<br>
 						وَسَــــلاَمٌ مُسْــتَمِـــرٌّ # كُلَّ حِــيْنٍ يَتَجَــدَّدْ<br>
+						صَلَّى اللهُ عَلىَ مُحَمَّد # صَلَّى اللهُ عَلَيْهِ وَسَلَّم<br>
+						رَبِّ فَااغْفِرْلِي ذُنُوْبِي # بِبَرْكَةِ الْهَادِي مُحَمَّد<br>
+						رَبِّ فَاجْعَلْ مُجْتَمَعْنَا # غَايَتُه الْحُسْنُ الْخِتَامِ<br>
+						وَاعْطِنَا مَاقَدْ سَأَلْنَا # مِنْ عَطَايَكَ الْجِسَامِ<br>
+						وَاكْرِمِ الْاَراَحَ مِنَّا # بِلِقَاءِ خَيْرِ الْاَنَامِ<br>
+						وَابْلِغِ الْمُخْتَارَ عَنَّا # مِنْ صَلَاةٍ وَسَلَامٍ<br>
 						
 						<br><br>
 					اَللّٰهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَيْهِ
@@ -1375,5 +1393,65 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
+		<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    let zoomLevel = 100;
+
+    const zoomIn = document.getElementById("zoomIn");
+    const zoomOut = document.getElementById("zoomOut");
+    const zoomPercent = document.getElementById("zoomPercent");
+
+    function updateZoom() {
+
+        // Hanya bekerja pada mobile
+        if (window.innerWidth > 767) {
+            return;
+        }
+
+        const fontIsi = document.querySelectorAll(".font_isi");
+        const fontLabel = document.querySelectorAll(".font_label");
+
+        fontIsi.forEach(function (element) {
+            element.style.fontSize = zoomLevel + "%";
+        });
+
+        fontLabel.forEach(function (element) {
+            element.style.fontSize = zoomLevel + "%";
+        });
+
+        zoomPercent.textContent = zoomLevel + "%";
+    }
+
+    zoomIn.addEventListener("click", function () {
+
+        if (zoomLevel < 180) {
+            zoomLevel += 10;
+            updateZoom();
+        }
+
+    });
+
+    zoomOut.addEventListener("click", function () {
+
+        if (zoomLevel > 70) {
+            zoomLevel -= 10;
+            updateZoom();
+        }
+
+    });
+
+    // Reset zoom ketika kembali ke desktop
+    window.addEventListener("resize", function () {
+
+        if (window.innerWidth > 767) {
+            zoomLevel = 100;
+            zoomPercent.textContent = "100%";
+        }
+
+    });
+
+});
+</script>
     </body>
 </html>
