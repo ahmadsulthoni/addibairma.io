@@ -43,6 +43,25 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
 
+    let isZoomPanelOpen = false;
+
+    function toggleZoomPanelState(forceOpen) {
+        isZoomPanelOpen = typeof forceOpen === 'boolean' ? forceOpen : !isZoomPanelOpen;
+        if (!mobileZoomPanel || !mobileZoomHandle) return;
+
+        mobileZoomPanel.classList.toggle('is-open', isZoomPanelOpen);
+        mobileZoomPanel.setAttribute('aria-hidden', String(!isZoomPanelOpen));
+        mobileZoomHandle.setAttribute('aria-expanded', String(isZoomPanelOpen));
+    }
+
+    function openMobileZoomPanel() {
+        toggleZoomPanelState(true);
+    }
+
+    function closeMobileZoomPanel() {
+        toggleZoomPanelState(false);
+    }
+
     document.addEventListener('click', event => {
         const target = event.target;
         const isClickInsideSidebar = sidebarWrapper ? sidebarWrapper.contains(target) : false;
@@ -60,7 +79,7 @@ window.addEventListener('DOMContentLoaded', event => {
         const isClickInsideZoomPanel = mobileZoomPanel ? mobileZoomPanel.contains(target) : false;
         const isClickOnZoomHandle = mobileZoomHandle ? mobileZoomHandle.contains(target) : false;
 
-        if (mobileZoomPanel && mobileZoomHandle && !isClickInsideZoomPanel && !isClickOnZoomHandle && mobileZoomPanel.classList.contains('is-open')) {
+        if (mobileZoomPanel && mobileZoomHandle && !isClickInsideZoomPanel && !isClickOnZoomHandle && isZoomPanelOpen) {
             closeMobileZoomPanel();
         }
     });
@@ -200,27 +219,9 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     });
 
-    const openMobileZoomPanel = () => {
-        if (!mobileZoomPanel || !mobileZoomHandle) return;
-        mobileZoomPanel.classList.add('is-open');
-        mobileZoomPanel.setAttribute('aria-hidden', 'false');
-        mobileZoomHandle.setAttribute('aria-expanded', 'true');
-    };
-
-    const closeMobileZoomPanel = () => {
-        if (!mobileZoomPanel || !mobileZoomHandle) return;
-        mobileZoomPanel.classList.remove('is-open');
-        mobileZoomPanel.setAttribute('aria-hidden', 'true');
-        mobileZoomHandle.setAttribute('aria-expanded', 'false');
-    };
-
     if (mobileZoomHandle) {
         mobileZoomHandle.addEventListener('click', () => {
-            if (mobileZoomPanel && mobileZoomPanel.classList.contains('is-open')) {
-                closeMobileZoomPanel();
-            } else {
-                openMobileZoomPanel();
-            }
+            toggleZoomPanelState();
         });
 
         mobileZoomHandle.addEventListener('keydown', (event) => {
@@ -315,8 +316,8 @@ window.addEventListener('DOMContentLoaded', event => {
         }
     });
 
-    setZoomLevel(currentZoom);
-    closeMobileZoomPanel();
+    setZoomLevel(zoomLevel);
+    toggleZoomPanelState(false);
 });
 
 function fadeOut(el) {
