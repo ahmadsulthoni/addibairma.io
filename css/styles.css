@@ -77,119 +77,135 @@
   }
 }
 
-/* =========================================
-   MOBILE ZOOM CONTROLS
-   ========================================= */
-
-.mobile-zoom-controls {
-  position: fixed;
-  left: 15px;
-  bottom: 20px;
-  z-index: 9999;
-
-  display: flex;
-  align-items: center;
-  gap: 5px;
-
-  padding: 6px;
-  background: rgba(0, 0, 0, 0.75);
-  border-radius: 30px;
-
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+:root {
+  --adiba-zoom-scale: 1;
+  --zoom-panel-bg: rgba(17, 24, 39, 0.82);
+  --zoom-panel-border: rgba(255, 255, 255, 0.12);
+  --zoom-button-bg: rgba(255, 255, 255, 0.96);
+  --zoom-button-text: #1f2937;
+  --zoom-button-hover: #e5e7eb;
 }
 
-.mobile-zoom-controls button {
-  width: 42px;
-  height: 42px;
-
-  border: none;
-  border-radius: 50%;
-
-  background: white;
-  color: #333;
-
-  font-size: 18px;
+.mobile-zoom-handle {
+  position: fixed;
+  left: 0;
+  bottom: 180px;
+  width: 18px;
+  height: 90px;
+  z-index: 10004;
+  display: block;
+  border-radius: 0 18px 18px 0;
+  background: rgba(17, 24, 39, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-left: none;
+  box-shadow: 4px 0 18px rgba(0, 0, 0, 0.22);
   cursor: pointer;
+  transition: all 0.25s ease;
+}
 
+.mobile-zoom-handle::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  width: 6px;
+  height: 42px;
+  transform: translateY(-50%);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow:
+    0 -10px 0 rgba(255, 255, 255, 0.85),
+    0 10px 0 rgba(255, 255, 255, 0.85);
+}
+
+.mobile-zoom-panel {
+  position: fixed;
+  left: 12px;
+  bottom: 115px;
+  z-index: 10005;
   display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 8px;
+  border-radius: 18px;
+  background: var(--zoom-panel-bg);
+  border: 1px solid var(--zoom-panel-border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(calc(-100% - 12px));
+  transition: transform 0.28s ease, opacity 0.28s ease;
+}
+
+.mobile-zoom-panel.is-open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+.zoom-button {
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 14px;
+  background: var(--zoom-button-bg);
+  color: var(--zoom-button-text);
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
-.mobile-zoom-controls button:active,
-.mobile-zoom-controls button:hover {
-  transform: scale(0.92);
-  background: #f0f0f0;
+.zoom-button:hover,
+.zoom-button:focus-visible {
+  background: var(--zoom-button-hover);
 }
 
-#zoomPercent {
-  min-width: 48px;
-  text-align: center;
-  color: white;
-  font-size: 13px;
-  font-weight: bold;
+.zoom-button:active {
+  transform: translateY(1px);
 }
 
-/* Desktop Zoom Controls */
-@media (min-width: 768px) {
-  .mobile-zoom-controls {
-    position: fixed;
-    left: 15px;
-    bottom: 20px;
-    z-index: 9999;
-
-    display: flex;
-    align-items: center;
-    gap: 5px;
-
-    padding: 8px;
-    background: rgba(0, 0, 0, 0.8);
-    border-radius: 30px;
-
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  }
-
-  .mobile-zoom-controls button {
-    width: 44px;
-    height: 44px;
-
-    border: none;
-    border-radius: 50%;
-
-    background: white;
-    color: #333;
-
-    font-size: 18px;
-    cursor: pointer;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    transition: all 0.2s ease;
-  }
-
-  .mobile-zoom-controls button:hover {
-    background: #f0f0f0;
-    transform: scale(1.05);
-  }
-
-  .mobile-zoom-controls button:active {
-    transform: scale(0.95);
-  }
-
-  #zoomPercent {
-    min-width: 52px;
-    text-align: center;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-  }
+.zoom-reset-button {
+  width: 64px;
+  min-width: 64px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0 10px;
 }
 
-/* Menu button positioning on mobile */
+.desktop-zoom-controls {
+  position: fixed;
+  left: 16px;
+  bottom: 76px;
+  z-index: 10003;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 16px;
+  background: rgba(17, 24, 39, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+.desktop-zoom-button {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  font-size: 1.15rem;
+}
+
+.desktop-zoom-button.zoom-reset-button {
+  width: 64px;
+  min-width: 64px;
+  font-size: 0.88rem;
+}
+
 .menu-toggle {
   position: fixed;
   right: 15px;
@@ -212,21 +228,25 @@
     bottom: auto;
     z-index: 999;
   }
+
+  .mobile-zoom-handle,
+  .mobile-zoom-panel {
+    display: none;
+  }
 }
 
 @media (max-width: 767.98px) {
+  .desktop-zoom-controls {
+    display: none;
+  }
 
   .scroll-to-top {
     position: fixed !important;
-
     right: 15px !important;
-    bottom: 20px !important;
-
+    bottom: 15px !important;
     z-index: 9997;
-
     width: 48px;
     height: 48px;
-
     display: flex !important;
     align-items: center;
     justify-content: center;
@@ -240,7 +260,37 @@
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
   }
+}
 
+.font_isi {
+  font-family: Roboto, sans-serif;
+  font-size: 4vw;
+  line-height: 1.4;
+}
+
+.font_label {
+  font-family: Roboto, sans-serif;
+  font-size: 6vw;
+}
+
+@media (min-width: 768px) {
+  .font_isi {
+    font-size: 2.3vw;
+  }
+
+  .font_label {
+    font-size: 3vw;
+  }
+}
+
+@media (min-width: 1024px) {
+  .font_isi {
+    font-size: 1.9rem;
+  }
+
+  .font_label {
+    font-size: 2.8rem;
+  }
 }
 
 body {
