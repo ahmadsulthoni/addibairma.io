@@ -131,6 +131,40 @@ window.addEventListener('DOMContentLoaded', event => {
             zoomOutBtn.click();
         }
     }
+
+    // Wheel zoom support for desktop (Ctrl + Scroll)
+    document.addEventListener('wheel', (event) => {
+        if (event.ctrlKey || event.metaKey) {
+            event.preventDefault();
+
+            if (event.deltaY < 0) {
+                // Scroll up = zoom in
+                _handleZoomIn();
+            } else {
+                // Scroll down = zoom out
+                _handleZoomOut();
+            }
+        }
+    }, { passive: false });
+
+    // Gesture support for trackpad (Safari and Chrome on macOS)
+    let lastGestureScale = 1;
+    document.addEventListener('gesturestart', (event) => {
+        lastGestureScale = event.scale;
+    });
+
+    document.addEventListener('gesturechange', (event) => {
+        event.preventDefault();
+
+        if (event.scale > lastGestureScale) {
+            // Zoom in (fingers moving apart)
+            _handleZoomIn();
+        } else if (event.scale < lastGestureScale) {
+            // Zoom out (fingers moving together)
+            _handleZoomOut();
+        }
+        lastGestureScale = event.scale;
+    });
 })
 
 function fadeOut(el) {
