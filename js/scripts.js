@@ -26,6 +26,31 @@ window.addEventListener('DOMContentLoaded', event => {
         })
     });
 
+    // Closes menu when clicking outside of it
+    let isScrolling = false;
+    const sidebarNav = document.querySelector('.sidebar-nav');
+
+    if (sidebarNav) {
+        sidebarNav.addEventListener('scroll', () => {
+            isScrolling = true;
+            setTimeout(() => {
+                isScrolling = false;
+            }, 100);
+        });
+    }
+
+    document.addEventListener('click', event => {
+        const isClickInsideSidebar = sidebarWrapper.contains(event.target);
+        const isClickOnMenuToggle = menuToggle.contains(event.target);
+        const isMenuOpen = sidebarWrapper.classList.contains('active');
+
+        if (isMenuOpen && !isClickInsideSidebar && !isClickOnMenuToggle && !isScrolling) {
+            sidebarWrapper.classList.remove('active');
+            menuToggle.classList.remove('active');
+            _toggleMenuIcon();
+        }
+    });
+
     function _toggleMenuIcon() {
         const menuToggleBars = document.body.querySelector('.menu-toggle > .fa-bars');
         const menuToggleTimes = document.body.querySelector('.menu-toggle > .fa-xmark');
@@ -54,6 +79,58 @@ window.addEventListener('DOMContentLoaded', event => {
             }
         }
     })
+
+    // Pinch to zoom gesture
+    let lastDistance = 0;
+    document.addEventListener('touchstart', (event) => {
+        if (event.touches.length === 2) {
+            const touch1 = event.touches[0];
+            const touch2 = event.touches[1];
+            lastDistance = Math.hypot(
+                touch2.clientX - touch1.clientX,
+                touch2.clientY - touch1.clientY
+            );
+        }
+    });
+
+    document.addEventListener('touchmove', (event) => {
+        if (event.touches.length === 2) {
+            event.preventDefault();
+            const touch1 = event.touches[0];
+            const touch2 = event.touches[1];
+            const currentDistance = Math.hypot(
+                touch2.clientX - touch1.clientX,
+                touch2.clientY - touch1.clientY
+            );
+
+            const diff = currentDistance - lastDistance;
+
+            if (Math.abs(diff) > 10) {
+                if (diff > 0) {
+                    // Zoom in
+                    _handleZoomIn();
+                } else {
+                    // Zoom out
+                    _handleZoomOut();
+                }
+                lastDistance = currentDistance;
+            }
+        }
+    });
+
+    function _handleZoomIn() {
+        const zoomInBtn = document.getElementById('zoomIn');
+        if (zoomInBtn) {
+            zoomInBtn.click();
+        }
+    }
+
+    function _handleZoomOut() {
+        const zoomOutBtn = document.getElementById('zoomOut');
+        if (zoomOutBtn) {
+            zoomOutBtn.click();
+        }
+    }
 })
 
 function fadeOut(el) {
