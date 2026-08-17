@@ -1535,11 +1535,6 @@
 
 			function updateZoom() {
 
-				// Hanya bekerja pada mobile
-				if (window.innerWidth > 767) {
-					return;
-				}
-
 				const fontIsi = document.querySelectorAll(".font_isi");
 				const fontLabel = document.querySelectorAll(".font_label");
 
@@ -1568,16 +1563,6 @@
 				if (zoomLevel > 70) {
 					zoomLevel -= 10;
 					updateZoom();
-				}
-
-			});
-
-			// Reset zoom ketika kembali ke desktop
-			window.addEventListener("resize", function () {
-
-				if (window.innerWidth > 767) {
-					zoomLevel = 100;
-					zoomPercent.textContent = "100%";
 				}
 
 			});

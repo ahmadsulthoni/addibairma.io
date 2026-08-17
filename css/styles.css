@@ -82,118 +82,108 @@
    ========================================= */
 
 .mobile-zoom-controls {
-  display: none;
+  position: fixed;
+  left: 15px;
+  bottom: 20px;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  padding: 6px;
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 30px;
+
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-zoom-controls button {
+  width: 42px;
+  height: 42px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: white;
+  color: #333;
+
+  font-size: 18px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-zoom-controls button:active,
+.mobile-zoom-controls button:hover {
+  transform: scale(0.92);
+  background: #f0f0f0;
+}
+
+#zoomPercent {
+  min-width: 48px;
+  text-align: center;
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+/* Menu button positioning on mobile */
+.menu-toggle {
+  position: fixed;
+  right: 15px;
+  bottom: 85px;
+  top: auto;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  color: #fff;
+  background: rgba(52, 58, 64, 0.5);
+  line-height: 50px;
+  z-index: 9998;
+}
+
+@media (min-width: 768px) {
+  .menu-toggle {
+    position: fixed;
+    right: 15px;
+    top: 15px;
+    bottom: auto;
+    z-index: 999;
+  }
 }
 
 @media (max-width: 767.98px) {
 
-  .mobile-zoom-controls {
-    position: fixed;
-    left: 15px;
-    bottom: 20px;
-    z-index: 9999;
+  .scroll-to-top {
+    position: fixed !important;
 
-    display: flex;
-    align-items: center;
-    gap: 5px;
+    right: 15px !important;
+    bottom: 20px !important;
 
-    padding: 6px;
-    background: rgba(0, 0, 0, 0.75);
-    border-radius: 30px;
+    z-index: 9997;
 
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  }
+    width: 48px;
+    height: 48px;
 
-  .mobile-zoom-controls button {
-    width: 42px;
-    height: 42px;
-
-    border: none;
-    border-radius: 50%;
-
-    background: white;
-    color: #333;
-
-    font-size: 18px;
-    cursor: pointer;
-
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
-
-    -webkit-tap-highlight-color: transparent;
   }
 
-  .mobile-zoom-controls button:active {
-    transform: scale(0.92);
+  .font_isi {
+    line-height: 1.2;
   }
 
-  #zoomPercent {
-    min-width: 48px;
-    text-align: center;
-    color: white;
-    font-size: 13px;
-    font-weight: bold;
+  .content-section {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
   }
 
-  /* Menu button positioning on mobile */
-  .menu-toggle {
-    position: fixed;
-    right: 15px;
-    bottom: 85px;
-    top: auto;
-    width: 50px;
-    height: 50px;
-    text-align: center;
-    color: #fff;
-    background: rgba(52, 58, 64, 0.5);
-    line-height: 50px;
-    z-index: 9998;
-  }
-
-  /* Jangan tampilkan tombol di desktop */
-  @media (min-width: 768px) {
-    .mobile-zoom-controls {
-      display: none !important;
-    }
-
-    .menu-toggle {
-      position: fixed;
-      right: 15px;
-      top: 15px;
-      bottom: auto;
-      z-index: 999;
-    }
-  }
-
-  @media (max-width: 767.98px) {
-
-    .scroll-to-top {
-      position: fixed !important;
-
-      right: 15px !important;
-      bottom: 20px !important;
-
-      z-index: 9997;
-
-      width: 48px;
-      height: 48px;
-
-      display: flex !important;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .font_isi {
-      line-height: 1.2;
-    }
-
-    .content-section {
-      padding-top: 1.5rem;
-      padding-bottom: 1.5rem;
-    }
-
-  }
 }
 
 body {
