@@ -5,6 +5,60 @@
 */
 window.addEventListener('DOMContentLoaded', event => {
 
+    let wakeLockSentinel = null;
+
+    async function requestWakeLock() {
+        if (!('wakeLock' in navigator) || !navigator.wakeLock || document.visibilityState !== 'visible') {
+            return;
+        }
+
+        if (wakeLockSentinel) {
+            return;
+        }
+
+        try {
+            wakeLockSentinel = await navigator.wakeLock.request('screen');
+            wakeLockSentinel.addEventListener('release', () => {
+                wakeLockSentinel = null;
+            });
+        } catch (error) {
+            wakeLockSentinel = null;
+        }
+    }
+
+    async function releaseWakeLock() {
+        if (!wakeLockSentinel || typeof wakeLockSentinel.release !== 'function') {
+            wakeLockSentinel = null;
+            return;
+        }
+
+        try {
+            await wakeLockSentinel.release();
+        } catch (error) {
+            // Ignore release failures.
+        } finally {
+            wakeLockSentinel = null;
+        }
+    }
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            requestWakeLock();
+        } else {
+            releaseWakeLock();
+        }
+    });
+
+    document.addEventListener('pageshow', () => {
+        requestWakeLock();
+    });
+
+    document.addEventListener('pagehide', () => {
+        releaseWakeLock();
+    });
+
+    requestWakeLock();
+
     const sidebarWrapper = document.getElementById('sidebar-wrapper');
     let scrollToTopVisible = false;
     const menuToggle = document.body.querySelector('.menu-toggle');
