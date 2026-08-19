@@ -13,17 +13,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!loading || !content) return;
 
+    auth.onAuthStateChange((event) => {
+        if (event === 'SIGNED_OUT') redirectToLogin();
+    });
+
     const result = await auth.checkSession();
 
     if (!result || !result.success || !result.authenticated) {
-        auth.clearSession();
+        await auth.clearSession();
         redirectToLogin();
         return;
     }
 
-    const user = result.user || auth.getUser();
-    const displayName = user && user.nama ? user.nama : 'Admin';
-    const role = user && user.role ? user.role : 'admin';
+    const user = result.user || {};
+    const displayName = user.nama || 'Admin';
+    const role = user.role || 'admin';
 
     if (adminName) adminName.textContent = displayName;
     if (adminRole) adminRole.textContent = role;

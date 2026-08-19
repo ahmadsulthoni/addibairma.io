@@ -2,128 +2,90 @@
     class AdminAuth {
         constructor(storage = window.sessionStorage) {
             this.storage = storage;
-            this.storageKey = 'adiba_admin_session';
+            this.messageKey = 'adiba_admin_message';
         }
 
         getSession() {
-            try {
-                const raw = this.storage.getItem(this.storageKey);
-                return raw ? JSON.parse(raw) : null;
-            } catch (error) {
-                return null;
+            const client = this.getClient();
+            return client ? client.auth.getSession() : Promise.resolve({ data: { session: null } });
+        }
+
+        getClient() {
+            return window.initSupabase ? window.initSupabase() : null;
+        }
+
+        onAuthStateChange(callback) {
+            const client = this.getClient();
+            return client ? client.auth.onAuthStateChange(callback) : { data: { subscription: { unsubscribe() {} } } };
+        }
+
+        async clearSession() {
+            const client = this.getClient();
+            if (client) await client.auth.signOut();
+        }
+
+        setMessage(message) {
+            this.storage.setItem(this.messageKey, message);
+        }
+
+        consumeMessage() {
+            const message = this.storage.getItem(this.messageKey);
+            this.storage.removeItem(this.messageKey);
+            return message;
+        }
+
+        async login(email, password) {
+            const client = this.getClient();
+            if (!client) throw new Error('Supabase belum dikonfigurasi.');
+
+            const { data, error } = await client.auth.signInWithPassword({ email, password });
+            if (error) throw error;
+
+            const profile = await this.getAdminProfile(data.user.id);
+            if (!profile) {
+                await client.auth.signOut();
+                this.setMessage('Anda tidak memiliki akses sebagai administrator.');
+                throw new Error('Anda tidak memiliki akses sebagai administrator.');
             }
+
+            return { user: data.user, profile };
         }
 
-        setSession(data) {
-            this.storage.setItem(this.storageKey, JSON.stringify(data));
-        }
+        async getAdminProfile(userId) {
+            const client = this.getClient();
+            const { data, error } = await client
+                .from('profiles')
+                .select('id, nama, role')
+                .eq('id', userId)
+                .eq('role', 'admin')
+                .maybeSingle();
 
-        clearSession() {
-            this.storage.removeItem(this.storageKey);
-        }
-
-        getToken() {
-            const session = this.getSession();
-            return session && session.token ? session.token : null;
-        }
-
-        getUser() {
-            const session = this.getSession();
-            return session && session.user ? session.user : null;
-        }
-
-        isAuthenticated() {
-            return Boolean(this.getToken());
-        }
-
-        async login(username, password) {
-            const payload = {
-                action: 'login',
-                username,
-                password
-            };
-
-            const result = await window.AdminApi.apiPost(payload);
-
-            if (!result || !result.success || !result.token) {
-                throw new Error(result && result.message ? result.message : 'Login gagal.');
-            }
-
-            const session = {
-                token: result.token,
-                user: result.user || null
-            };
-
-            this.setSession(session);
-            return result;
+            if (error) throw error;
+            return data;
         }
 
         async logout() {
-            const token = this.getToken();
-
-            if (!token) {
-                this.clearSession();
-                return { success: true, message: 'Logout berhasil.' };
-            }
-
-            try {
-                const result = await window.AdminApi.apiPost({
-                    action: 'logout',
-                    token
-                });
-
-                this.clearSession();
-                return result;
-            } catch (error) {
-                this.clearSession();
-                return {
-                    success: true,
-                    message: 'Logout berhasil.'
-                };
-            }
+            await this.clearSession();
+            return { success: true, message: 'Logout berhasil.' };
         }
 
         async checkSession() {
-            const token = this.getToken();
+            const client = this.getClient();
+            if (!client) return { success: false, authenticated: false, message: 'Supabase belum dikonfigurasi.' };
 
-            if (!token) {
-                this.clearSession();
-                return {
-                    success: false,
-                    authenticated: false,
-                    message: 'Session tidak ditemukan.'
-                };
+            const { data: sessionData, error } = await client.auth.getSession();
+            if (error || !sessionData.session) {
+                return { success: false, authenticated: false, message: 'Session tidak ditemukan.' };
             }
 
-            try {
-                const result = await window.AdminApi.apiPost({
-                    action: 'checkSession',
-                    token
-                });
-
-                if (!result || !result.success || !result.authenticated) {
-                    this.clearSession();
-                    return {
-                        success: false,
-                        authenticated: false,
-                        message: 'Session tidak valid.'
-                    };
-                }
-
-                this.setSession({
-                    token,
-                    user: result.user || this.getUser()
-                });
-
-                return result;
-            } catch (error) {
-                this.clearSession();
-                return {
-                    success: false,
-                    authenticated: false,
-                    message: 'Session tidak valid.'
-                };
+            const profile = await this.getAdminProfile(sessionData.session.user.id);
+            if (!profile) {
+                await client.auth.signOut();
+                this.setMessage('Anda tidak memiliki akses sebagai administrator.');
+                return { success: false, authenticated: false, message: 'Akses administrator ditolak.' };
             }
+
+            return { success: true, authenticated: true, user: profile, session: sessionData.session };
         }
     }
 

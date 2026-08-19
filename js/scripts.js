@@ -121,7 +121,9 @@ window.addEventListener('DOMContentLoaded', event => {
     const zoomPercentEls = document.querySelectorAll('[data-zoom-percent]');
     const mobileZoomHandle = document.getElementById('mobileZoomHandle');
     const mobileZoomPanel = document.getElementById('mobileZoomPanel');
-    const textTargets = Array.from(document.querySelectorAll('.font_isi, .font_label'));
+    function getTextTargets() {
+        return Array.from(document.querySelectorAll('.font_isi, .font_label, .font_latin, .font_terjemahan'));
+    }
 
     function safeGetStoredZoom() {
         try {
@@ -155,7 +157,7 @@ window.addEventListener('DOMContentLoaded', event => {
     }
 
     function initializeBaseFontSizes() {
-        textTargets.forEach((element) => {
+        getTextTargets().forEach((element) => {
             if (!element) return;
             getBaseFontSize(element);
         });
@@ -165,7 +167,7 @@ window.addEventListener('DOMContentLoaded', event => {
     initializeBaseFontSizes();
 
     function applyZoom() {
-        textTargets.forEach((element) => {
+        getTextTargets().forEach((element) => {
             if (!element) return;
 
             const baseFontSize = getBaseFontSize(element);

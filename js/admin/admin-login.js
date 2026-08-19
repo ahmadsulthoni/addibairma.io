@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = (passwordInput ? passwordInput.value : '').trim();
 
         if (!username || !password) {
-            setAlert('Username dan password wajib diisi.', 'danger');
+            setAlert('Email dan password wajib diisi.', 'danger');
             return;
         }
 
@@ -48,12 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
             await auth.login(username, password);
             window.location.href = 'dashboard.html';
         } catch (error) {
-            const message = window.AdminApi.handleApiError(error, () => {
-                auth.clearSession();
-            });
-            setAlert(message || 'Login gagal. Periksa username dan password Anda.', 'danger');
+            setAlert(error && error.message ? error.message : 'Login gagal. Periksa email dan password Anda.', 'danger');
         } finally {
             setLoading(false);
         }
     });
+
+    const accessMessage = auth.consumeMessage();
+    if (accessMessage) setAlert(accessMessage, 'danger');
 });

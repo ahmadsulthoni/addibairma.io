@@ -22,9 +22,9 @@
 
             <form id="adminLoginForm" novalidate>
                 <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
-                    <input id="username" name="username" type="text" class="form-control"
-                        placeholder="Masukkan username" autocomplete="username" />
+                    <label for="username" class="form-label">Email</label>
+                    <input id="username" name="username" type="email" class="form-control"
+                        placeholder="Masukkan email" autocomplete="email" />
                 </div>
 
                 <div class="mb-3">
@@ -43,7 +43,8 @@
     </div>
 
     <script src="../js/config.js"></script>
-    <script src="../js/admin/admin-api.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase.js"></script>
     <script src="../js/admin/admin-auth.js"></script>
     <script src="../js/admin/admin-login.js"></script>
 </body>

@@ -236,6 +236,14 @@
   font-size: 6vw;
 }
 
+.font_latin,
+.font_terjemahan {
+  font-family: Roboto, sans-serif;
+  font-size: 1.25rem;
+  line-height: 1.6;
+  white-space: normal;
+}
+
 @media (min-width: 768px) {
   .font_isi {
     font-size: 2.3vw;
